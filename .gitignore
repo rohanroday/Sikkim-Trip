@@ -1,0 +1,62 @@
+# --- Dependencies ---
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/releases
+
+# --- Next.js build output ---
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# --- Local data (dev MongoDB, local ID uploads) ---
+# Guest ID photos can land in .data/uploads during development. Never commit them.
+.data/
+
+# --- Environment and secrets ---
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+!.env.example
+*.pem
+*.key
+
+# --- Tests and coverage ---
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/
+
+# --- Deployment ---
+.vercel/
+
+# --- Claude Code: personal files (project settings.json and launch.json are shared) ---
+.claude/settings.local.json
+.claude/worktrees/
+.claude/plans/
+
+# --- Local-only skill bundles and downloads ---
+.skills/
+*.zip
+
+# --- Logs ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# --- Editors and OS ---
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+desktop.ini

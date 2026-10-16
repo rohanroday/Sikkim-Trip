@@ -1,0 +1,234 @@
+@import "tailwindcss";
+
+/*
+ * Design direction: "the fixed fare". Himalayan morning mist for the canvas,
+ * deep pine ink, rhododendron red as the rare accent (CTA, focus, the stamp).
+ */
+:root {
+  --canvas: #eef2ef;
+  --panel: #f8faf7;
+  --panel-2: #e3e9e5;
+  --ink: #14251f;
+  --ink-2: #44554f;
+  --line: #cfd8d3;
+  --line-strong: #7f908a;
+  --accent: #b3263e;
+  --accent-hover: #941b30;
+  --accent-muted: rgba(179, 38, 62, 0.12);
+  --glacier: #2c6680;
+  --snow: #fbfcfb;
+  --ok: #1f6b45;
+  --warn: #8a5a00;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --tshadow: 0 1px 2px rgba(8, 18, 14, 0.9), 0 3px 12px rgba(8, 18, 14, 0.6), 0 10px 44px rgba(8, 18, 14, 0.55);
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-glacier: var(--glacier);
+  --color-snow: var(--snow);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  animation: page-in 0.6s var(--ease-out) both;
+}
+
+@keyframes page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* One environment: a slow drifting mist layer behind every page. */
+.env-mist {
+  position: fixed;
+  inset: -20% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 20% 30%, rgba(44, 102, 128, 0.07), transparent 70%),
+    radial-gradient(35% 25% at 80% 60%, rgba(31, 107, 69, 0.06), transparent 70%),
+    radial-gradient(30% 20% at 50% 90%, rgba(179, 38, 62, 0.035), transparent 70%);
+  animation: mist-drift 90s var(--ease-in-out) infinite alternate;
+  animation-delay: -20s;
+}
+@keyframes mist-drift {
+  from { transform: translate3d(-3%, 0, 0); }
+  to { transform: translate3d(3%, -2%, 0); }
+}
+
+body.paused *,
+body.paused *::before,
+body.paused *::after {
+  animation-play-state: paused !important;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--snow);
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  transition: top 0.2s var(--ease-out);
+}
+.skip-link:focus { top: 1rem; }
+
+/* Component classes live in a layer so Tailwind utilities can override them. */
+@layer components {
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+  text-shadow: none;
+}
+.btn:active { transform: translateY(1px) scale(0.99); }
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 20px -8px rgba(179, 38, 62, 0.6); }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-primary:disabled { background: #b9a2a7; box-shadow: none; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line-strong); }
+.btn-ghost:hover { background: var(--panel-2); }
+.btn-light { background: rgba(251, 252, 251, 0.94); color: var(--ink); }
+.btn-light:hover { background: #fff; }
+
+/* Form fields */
+.field {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.65rem 0.9rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--snow);
+  color: var(--ink);
+  transition: border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+}
+.field:focus { outline: none; border-color: var(--glacier); box-shadow: 0 0 0 4px rgba(44, 102, 128, 0.15); }
+.label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.35rem; color: var(--ink); }
+.hint { font-size: 0.8125rem; color: var(--ink-2); margin-top: 0.3rem; }
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* The signature: fare tickets with a perforated tear line. */
+.ticket {
+  position: relative;
+  background: var(--panel);
+  border-radius: 20px;
+  box-shadow: 0 1px 0 rgba(20, 37, 31, 0.06), 0 18px 40px -26px rgba(20, 37, 31, 0.45);
+  transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out);
+}
+.ticket:hover { transform: translateY(-3px); box-shadow: 0 1px 0 rgba(20, 37, 31, 0.06), 0 26px 50px -26px rgba(20, 37, 31, 0.5); }
+.ticket-tear {
+  position: relative;
+  height: 0;
+  border-top: 2px dashed var(--line);
+  margin: 0 18px;
+}
+.ticket-tear::before,
+.ticket-tear::after {
+  content: "";
+  position: absolute;
+  top: -13px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--canvas);
+}
+.ticket-tear::before { left: -31px; }
+.ticket-tear::after { right: -31px; }
+
+.stamp {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.2rem 0.5rem;
+  transform: rotate(-6deg);
+  display: inline-block;
+}
+
+}
+
+/* Section entrances: IntersectionObserver adds .in */
+.reveal .part {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.reveal.in .part { opacity: 1; transform: none; }
+.reveal.in .part:nth-child(2) { transition-delay: 90ms; }
+.reveal.in .part:nth-child(3) { transition-delay: 180ms; }
+.reveal.in .part:nth-child(4) { transition-delay: 270ms; }
+/* Retire the stagger once the entrance is done so hovers never lag. */
+.reveal.in.settled .part,
+.reveal.in.settled .part:nth-child(n) { transition-delay: 0ms; }
+
+@media (pointer: coarse) {
+  .btn { min-height: 48px; }
+  a, button { -webkit-tap-highlight-color: transparent; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal .part { opacity: 1; transform: none; }
+}
+
+/* Mist bands drifting across the hero range */
+.mist-a { animation: mist-slide 70s var(--ease-in-out) infinite alternate; animation-delay: -12s; }
+.mist-b { animation: mist-slide 95s var(--ease-in-out) infinite alternate-reverse; animation-delay: -30s; }
+@keyframes mist-slide {
+  from { transform: translateX(-80px); }
+  to { transform: translateX(80px); }
+}
