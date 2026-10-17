@@ -33,7 +33,7 @@ Update this section when the phase changes.
 | Payments | Razorpay Orders + webhooks; Razorpay Route for split payouts |
 | Messaging | WhatsApp Business Cloud API (templates); SMS fallback for OTP |
 | Files | S3-compatible private bucket, signed URLs |
-| Jobs | Vercel Cron hitting `app/api/cron/*` (protected by `CRON_SECRET`) |
+| Jobs | Vercel Cron runs `/api/cron/daily` (Hobby plan); `release-holds` and `partner-sla` can be called by an external cron. All protected by `CRON_SECRET` |
 | Hosting | Vercel |
 | Tests | Vitest (unit/integration with `mongodb-memory-server` replica set); Playwright e2e still to add |
 
@@ -85,7 +85,7 @@ npm run typecheck    # tsc --noEmit
 npm test             # vitest (downloads a mongod binary on first run)
 ```
 
-Local test mode: with no WhatsApp keys, OTP codes are shown on screen and messages are logged as "skipped". With no Razorpay keys, checkout uses `/api/dev/simulate-payment` (same code path as the webhook). With no S3 keys, files go to `.data/uploads`. All three fallbacks are disabled when `NODE_ENV=production`. Admin sign-in needs your number in `ADMIN_PHONES`.
+Local test mode: with no WhatsApp keys, OTP codes are shown on screen and messages are logged as "skipped". With no Razorpay keys, checkout uses `/api/dev/simulate-payment` (same code path as the webhook). With no S3 keys, files go to a MongoDB GridFS bucket (`guest_files`) in every environment. The OTP and payment fallbacks are disabled when `NODE_ENV=production`, except that `NEXT_PUBLIC_TEST_MODE=true` keeps sign-in codes on screen (never with `rzp_live_` keys) and shows a test-mode banner. Admin sign-in needs your number in `ADMIN_PHONES`.
 
 Before declaring work done: `lint`, `typecheck` and `test` must pass.
 

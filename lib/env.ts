@@ -27,4 +27,12 @@ export const env = {
   get isProd() {
     return process.env.NODE_ENV === "production";
   },
+  /**
+   * Public test mode: shows a banner and, while WhatsApp is not connected, shows
+   * sign-in codes on screen. Never on with live Razorpay keys.
+   */
+  get testMode() {
+    if ((process.env.RAZORPAY_KEY_ID ?? "").startsWith("rzp_live_")) return false;
+    return process.env.NEXT_PUBLIC_TEST_MODE === "true";
+  },
 };

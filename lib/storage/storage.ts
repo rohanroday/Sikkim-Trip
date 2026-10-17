@@ -1,18 +1,19 @@
 /**
  * Private file storage for guest IDs and partner documents.
- * S3-compatible bucket when configured; a local folder in development only.
- * Files are reachable only through short-lived signed URLs.
+ * S3-compatible bucket when configured; otherwise a GridFS bucket in MongoDB
+ * (fine for launch volumes). Files are reachable only through short-lived
+ * signed URLs, and the file route also requires an admin session.
  */
 import { createHmac, timingSafeEqual } from "crypto";
-import { promises as fs } from "fs";
-import path from "path";
+import mongoose from "mongoose";
+import { GridFSBucket } from "mongodb";
 import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "@/lib/env";
-import { ConfigError } from "@/lib/errors";
+import { connectDB } from "@/lib/db/connect";
 
-const LOCAL_ROOT = path.join(process.cwd(), ".data", "uploads");
 export const SIGNED_URL_TTL_SECONDS = 300;
+const BUCKET = "guest_files";
 
 function s3Configured(): boolean {
   return Boolean(process.env.S3_BUCKET && process.env.S3_ACCESS_KEY_ID && process.env.S3_SECRET_ACCESS_KEY);
@@ -29,14 +30,10 @@ function s3(): S3Client {
   return client;
 }
 
-function assertLocalAllowed() {
-  if (env.isProd) throw new ConfigError("File storage is not configured (S3_* env vars).");
-}
-
-function localPath(key: string): string {
-  const p = path.normalize(path.join(LOCAL_ROOT, key));
-  if (!p.startsWith(LOCAL_ROOT)) throw new ConfigError("Bad file key.");
-  return p;
+async function gridfs(): Promise<GridFSBucket> {
+  await connectDB();
+  // mongoose bundles its own mongodb driver; the bucket only needs the Db handle.
+  return new GridFSBucket(mongoose.connection.db as unknown as ConstructorParameters<typeof GridFSBucket>[0], { bucketName: BUCKET });
 }
 
 export async function putObject(key: string, body: Buffer, contentType: string): Promise<void> {
@@ -44,10 +41,13 @@ export async function putObject(key: string, body: Buffer, contentType: string):
     await s3().send(new PutObjectCommand({ Bucket: process.env.S3_BUCKET, Key: key, Body: body, ContentType: contentType }));
     return;
   }
-  assertLocalAllowed();
-  const p = localPath(key);
-  await fs.mkdir(path.dirname(p), { recursive: true });
-  await fs.writeFile(p, body);
+  const bucket = await gridfs();
+  await new Promise<void>((resolve, reject) => {
+    const stream = bucket.openUploadStream(key, { metadata: { contentType } });
+    stream.once("finish", () => resolve());
+    stream.once("error", reject);
+    stream.end(body);
+  });
 }
 
 export async function deleteObject(key: string): Promise<void> {
@@ -55,11 +55,19 @@ export async function deleteObject(key: string): Promise<void> {
     await s3().send(new DeleteObjectCommand({ Bucket: process.env.S3_BUCKET, Key: key }));
     return;
   }
-  assertLocalAllowed();
-  await fs.rm(localPath(key), { force: true });
+  const bucket = await gridfs();
+  const files = await bucket.find({ filename: key }).toArray();
+  for (const f of files) await bucket.delete(f._id);
 }
 
-function localSig(key: string, exp: number): string {
+/** True if a stored file exists (used by tests and the purge audit). */
+export async function objectExists(key: string): Promise<boolean> {
+  if (s3Configured()) return true;
+  const bucket = await gridfs();
+  return (await bucket.find({ filename: key }).limit(1).toArray()).length > 0;
+}
+
+function sign(key: string, exp: number): string {
   return createHmac("sha256", env.sessionSecret).update(`${key}:${exp}`).digest("base64url");
 }
 
@@ -67,17 +75,20 @@ export async function signedUrl(key: string, ttlSeconds = SIGNED_URL_TTL_SECONDS
   if (s3Configured()) {
     return getSignedUrl(s3(), new GetObjectCommand({ Bucket: process.env.S3_BUCKET, Key: key }), { expiresIn: ttlSeconds });
   }
-  assertLocalAllowed();
   const exp = Math.floor(Date.now() / 1000) + ttlSeconds;
-  return `/api/files/${key.split("/").map(encodeURIComponent).join("/")}?exp=${exp}&sig=${localSig(key, exp)}`;
+  return `/api/files/${key.split("/").map(encodeURIComponent).join("/")}?exp=${exp}&sig=${sign(key, exp)}`;
 }
 
-/** For the dev-only local file route. */
-export async function readLocalSigned(key: string, exp: number, sig: string): Promise<Buffer | null> {
-  assertLocalAllowed();
+/** For the file route: returns the file only if the signature is valid and unexpired. */
+export async function readSigned(key: string, exp: number, sig: string): Promise<{ body: Buffer; contentType: string } | null> {
   if (!Number.isFinite(exp) || exp < Date.now() / 1000) return null;
-  const a = Buffer.from(localSig(key, exp));
+  const a = Buffer.from(sign(key, exp));
   const b = Buffer.from(sig);
   if (a.length !== b.length || !timingSafeEqual(a, b)) return null;
-  return fs.readFile(localPath(key)).catch(() => null);
+  const bucket = await gridfs();
+  const [file] = await bucket.find({ filename: key }).limit(1).toArray();
+  if (!file) return null;
+  const chunks: Buffer[] = [];
+  for await (const chunk of bucket.openDownloadStream(file._id)) chunks.push(chunk as Buffer);
+  return { body: Buffer.concat(chunks), contentType: (file.metadata?.contentType as string) ?? "application/octet-stream" };
 }

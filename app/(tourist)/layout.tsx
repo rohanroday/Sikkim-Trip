@@ -1,9 +1,10 @@
-import { RouteBanner, SiteFooter, SiteNav } from "@/components/layout/SiteChrome";
+import { RouteBanner, SiteFooter, SiteNav, TestModeBanner } from "@/components/layout/SiteChrome";
 
 export default function TouristLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <a href="#main" className="skip-link">Skip to content</a>
+      <TestModeBanner />
       <RouteBanner />
       <div className="relative">
         <SiteNav />

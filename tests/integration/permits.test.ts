@@ -1,10 +1,9 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
-import { existsSync } from "fs";
-import path from "path";
 import { Booking, PermitRequest } from "@/lib/db/models";
 import { createHold } from "@/lib/booking/createHold";
 import { handlePaymentCaptured } from "@/lib/booking/payment";
+import { objectExists } from "@/lib/storage/storage";
 import { purgeExpiredGuestDocs, submitGuests, deleteDocsAfterFor } from "@/lib/permits/permits";
 import { makePackage, makeStay, resetDb, setupDb, TOURIST, TOURIST_PHONE } from "../helpers";
 
@@ -39,8 +38,7 @@ describe("permit guest IDs", () => {
     const booking = await paidPermitBooking();
     const permit = await submitGuests({ bookingId: booking._id, guests: [guest("A"), guest("B")], files: [file(), file()], consent: true });
     const keys = permit.guests.map((g) => g.idFileKey!);
-    const local = (k: string) => path.join(process.cwd(), ".data", "uploads", k);
-    expect(keys.every((k) => existsSync(local(k)))).toBe(true);
+    for (const k of keys) expect(await objectExists(k)).toBe(true);
 
     expect(await purgeExpiredGuestDocs(new Date())).toBe(0);
     const after = new Date(deleteDocsAfterFor(booking.endDate).getTime() + 1000);
@@ -48,6 +46,6 @@ describe("permit guest IDs", () => {
     const purged = (await PermitRequest.findById(permit._id).lean())!;
     expect(purged.docsPurgedAt).toBeTruthy();
     expect(purged.guests.every((g) => !g.idFileKey)).toBe(true);
-    expect(keys.some((k) => existsSync(local(k)))).toBe(false);
+    for (const k of keys) expect(await objectExists(k)).toBe(false);
   });
 });

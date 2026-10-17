@@ -4,6 +4,7 @@ import { activeAlerts, ROUTE_LABELS } from "@/lib/routes";
 import { formatNight, todayIST } from "@/lib/dates";
 import type { RouteName } from "@/lib/db/models";
 import { connectDB } from "@/lib/db/connect";
+import { env } from "@/lib/env";
 
 export function SiteNav() {
   const links = [
@@ -46,6 +47,16 @@ export function SiteNav() {
         </details>
       </nav>
     </header>
+  );
+}
+
+/** Shown on every public page while NEXT_PUBLIC_TEST_MODE is on. */
+export function TestModeBanner() {
+  if (!env.testMode) return null;
+  return (
+    <div role="note" className="relative z-40 bg-warn text-center text-sm font-medium text-snow">
+      <p className="mx-auto max-w-6xl px-4 py-2 sm:px-6">Test mode. No real bookings or payments are taken on this site yet.</p>
+    </div>
   );
 }
 

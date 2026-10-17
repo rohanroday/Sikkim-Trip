@@ -27,7 +27,7 @@ export async function requestOtp(phone: string, now = new Date()): Promise<{ dev
   await OtpCode.create({ phone, codeHash: hash(phone, code), expiresAt: new Date(now.getTime() + OTP_TTL_MS), createdAt: now });
 
   await sendTemplate({ to: phone, template: "otp_code", bodyParams: [code], urlButtonParam: code });
-  const exposeForDev = !env.isProd && !isWhatsappConfigured();
+  const exposeForDev = (!env.isProd || env.testMode) && !isWhatsappConfigured();
   return exposeForDev ? { devCode: code } : {};
 }
 
