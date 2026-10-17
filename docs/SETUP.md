@@ -55,10 +55,10 @@ Turn `NEXT_PUBLIC_TEST_MODE` off (it also switches off by itself with `rzp_live_
 |---|---|---|---|---|
 | 1 | **MongoDB Atlas** cluster, Mumbai region | Live database | `MONGODB_URI` | Free M0 is fine to start. Atlas clusters are replica sets, so transactions work. |
 | 2 | **Razorpay** account (test keys first, then live) | Take payments, refunds | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `NEXT_PUBLIC_RAZORPAY_KEY_ID`, `RAZORPAY_WEBHOOK_SECRET` | Live mode needs your company or LLP and KYC. Add a webhook to `https://<your-domain>/api/payments/razorpay/webhook` for `payment.captured` and `refund.processed`. Turn on **Route** later for automatic partner payouts (Phase 2). |
-| 3 | **WhatsApp Business Cloud API** (Meta) | OTP codes, booking alerts, partner Confirm/Decline buttons | `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `ADMIN_ALERT_WHATSAPP` | Needs a verified Meta Business account and a phone number not already on WhatsApp. Set the webhook to `https://<your-domain>/api/whatsapp/webhook` and subscribe to `messages`. Submit the 15 templates in `lib/whatsapp/templates.ts` for approval (names and text must match exactly). |
+| 3 | **WhatsApp Business Cloud API** (Meta) | OTP codes, booking alerts, partner Confirm/Decline buttons | `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `ADMIN_ALERT_WHATSAPP` | Needs a verified Meta Business account and a phone number not already on WhatsApp. Set the webhook to `https://<your-domain>/api/whatsapp/webhook` and subscribe to `messages`. Submit the 15 templates in `src/server/whatsapp/templates.ts` for approval (names and text must match exactly). |
 | 4 | **Private file storage** (AWS S3 in Mumbai, or Cloudflare R2), optional | Guest ID photos for permits | `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_ENDPOINT` (R2 only) | Without it, files are stored in MongoDB GridFS, which is fine at launch volumes. Keep the bucket private. The app deletes IDs 7 days after each trip. Add a 30-day lifecycle rule as a backup. |
 | 5 | **Vercel** project | Hosting and cron jobs | all of the above plus `SESSION_SECRET` (random, 32+ chars), `CRON_SECRET`, `NEXT_PUBLIC_SITE_URL` | `vercel.json` runs one daily job, which works on Hobby. On Pro you can add the 1-minute and 10-minute jobs back. |
-| 6 | **Domain and brand name** | Site address, WhatsApp display name | `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_WHATSAPP` | The brand name is in `lib/site.ts` ("Sikkim Trip" for now). |
+| 6 | **Domain and brand name** | Site address, WhatsApp display name | `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPPORT_WHATSAPP` | The brand name is in `src/lib/site.ts` ("Sikkim Trip" for now). |
 | 7 | Error tracking (optional) | Alerts when something breaks | `SENTRY_DSN` | Not wired up yet. |
 
 ## 4. Business inputs only you can give
@@ -66,7 +66,7 @@ Turn `NEXT_PUBLIC_TEST_MODE` off (it also switches off by itself with `rzp_live_
 - **Real partners:** homestay and operator names, WhatsApp numbers, registration and licence numbers, commission agreed with each (8 to 12%).
 - **Real trips and prices:** the three launch packages with costs agreed with operators and homestays. Nathula uses the ₹6,500 notified fare as its floor.
 - **Photos** of each stay (paste a photo URL in admin; placeholder art shows until then).
-- **Cancellation policy sign-off:** the 90% / 50% / 0% tiers are a proposal (`lib/booking/cancel.ts`).
+- **Cancellation policy sign-off:** the 90% / 50% / 0% tiers are a proposal (`src/server/booking/cancel.ts`).
 - **Legal review** of `/privacy`, `/terms` and `/cancellation-policy` (marked DRAFT in the code), and CA advice on GST and who is seller of record.
 - **Operator registration** check with the Tourism and Civil Aviation Department, and company or LLP registration (needed for Razorpay live mode).
 

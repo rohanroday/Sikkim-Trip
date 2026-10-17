@@ -1,7 +1,7 @@
 import mongoose, { type Types } from "mongoose";
 import { inject } from "vitest";
-import { connectDB } from "@/lib/db/connect";
-import { Booking, Departure, Inventory, Package, Partner, Property, Room } from "@/lib/db/models";
+import { connectDB } from "@/server/db/connect";
+import { Booking, Departure, Inventory, Package, Partner, Property, Room } from "@/server/db/models";
 import { addDays, todayIST } from "@/lib/dates";
 import { rupeesToPaise } from "@/lib/money";
 

@@ -10,8 +10,8 @@ config({ path: ".env.local" });
 config();
 
 import mongoose from "mongoose";
-import { connectDB } from "@/lib/db/connect";
-import { Booking, Departure, Inventory, Package, Partner, PermitRequest, Property, Room } from "@/lib/db/models";
+import { connectDB } from "@/server/db/connect";
+import { Booking, Departure, Inventory, Package, Partner, PermitRequest, Property, Room } from "@/server/db/models";
 import { addDays, todayIST } from "@/lib/dates";
 import { rupeesToPaise } from "@/lib/money";
 

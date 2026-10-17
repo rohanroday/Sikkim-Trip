@@ -1,8 +1,8 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
-import { Booking, Departure, Inventory } from "@/lib/db/models";
-import { createHold } from "@/lib/booking/createHold";
-import { releaseExpiredHolds } from "@/lib/booking/expire";
+import { Booking, Departure, Inventory } from "@/server/db/models";
+import { createHold } from "@/server/booking/createHold";
+import { releaseExpiredHolds } from "@/server/booking/expire";
 import { HoldConflictError } from "@/lib/errors";
 import { rupeesToPaise } from "@/lib/money";
 import { inDays, makePackage, makeStay, resetDb, setupDb, TOURIST, TOURIST_PHONE } from "../helpers";

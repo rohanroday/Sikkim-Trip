@@ -27,7 +27,7 @@ Update this section when the phase changes.
 |---|---|
 | Framework | Next.js (App Router) + TypeScript (strict) |
 | UI | Tailwind CSS v4, mobile-first; PWA manifest (service worker still to add) |
-| Backend | Next.js route handlers (`app/api/**/route.ts`) and server actions |
+| Backend | Next.js route handlers (`src/app/api/**/route.ts`) and server actions |
 | DB | MongoDB Atlas (Mumbai) via Mongoose; **multi-document transactions** for inventory |
 | Validation | Zod at every API/server-action boundary |
 | Payments | Razorpay Orders + webhooks; Razorpay Route for split payouts |
@@ -40,38 +40,43 @@ Update this section when the phase changes.
 ## Layout
 
 ```
-app/
-  (tourist)/            # public site: /, /packages, /stays, /checkout, /booking/[code], legal pages
-  admin/login/          # admin OTP sign-in
-  admin/(panel)/        # admin panel; actions.ts holds the server actions
-  api/
-    auth/otp/           # request + verify (tourist and admin sessions)
-    bookings/           # create hold (+ Razorpay order), [code]/cancel, [code]/guests
-    payments/razorpay/webhook/
-    whatsapp/webhook/
-    cron/               # release-holds (1 min), partner-sla (10 min), daily (complete trips, purge IDs)
-    dev/simulate-payment/  # local only, when no Razorpay keys
-    files/[...key]/     # local only, serves the dev storage fallback
-lib/
-  db/                   # mongoose connection, models/ (one file per collection)
-  booking/              # stateMachine, createHold, payment, confirmations, cancel, expire, notify, quote
-  admin/                # admin operations (partners, stays, inventory, packages, route closures)
-  catalog.ts            # read models for public pages (plain JSON)
-  inventory/holds.ts    # hold/release/confirm room-nights and seats, inside transactions
-  payments/             # razorpay client, signature verify, route transfers
-  whatsapp/             # template senders, webhook parsing
-  permits/              # guest list assembly, operator handoff
-  storage/              # signed upload/download, deletion
-  auth/                 # OTP, sessions, role guards
-  money.ts              # paise helpers + INR formatting
-  dates.ts              # IST night-date helpers
-components/             # admin/, booking/, catalog/, home/, layout/, ui/ (group new components by area)
+src/
+  app/                  # routes only: pages, layouts, route handlers
+    (tourist)/          # public site: /, /packages, /stays, /checkout, /booking/[code], legal pages
+    admin/login/        # admin OTP sign-in
+    admin/(panel)/      # admin panel; actions.ts holds the server actions
+    api/
+      auth/otp/         # request + verify (tourist and admin sessions)
+      bookings/         # create hold (+ Razorpay order), [code]/cancel, [code]/guests
+      payments/razorpay/webhook/
+      whatsapp/webhook/
+      cron/             # daily (Vercel), release-holds and partner-sla (external cron)
+      dev/simulate-payment/  # local only, when no Razorpay keys
+      files/[...key]/   # serves GridFS files (signed URL + admin session)
+  components/           # admin/, booking/, catalog/, home/, layout/, ui/ (group new components by area)
+  server/               # SERVER-ONLY: never import from a "use client" file (type-only imports are fine)
+    db/                 # mongoose connection, models/ (one file per collection)
+    booking/            # stateMachine, createHold, payment, confirmations, cancel, expire, notify, quote
+    inventory/holds.ts  # hold/release/confirm room-nights and seats, inside transactions
+    admin/              # admin operations (partners, stays, inventory, packages, route closures)
+    auth/               # OTP, sessions, role guards
+    payments/           # razorpay client, signature verify
+    whatsapp/           # template senders, webhook parsing
+    permits/            # guest list assembly, operator handoff, ID purge
+    storage/            # S3 or GridFS, signed URLs, deletion
+    catalog.ts          # read models for public pages (plain JSON)
+    routeClosures.ts    # road closures, banner data, sales blocking
+    env.ts http.ts audit.ts
+  lib/                  # SHARED: pure helpers safe on client and server
+    money.ts            # paise helpers + INR formatting
+    dates.ts            # IST night-date helpers
+    phone.ts errors.ts site.ts content.ts
 scripts/                # dev-db.ts (local replica set), seed.ts (sample data)
 tests/                  # unit/ and integration/; globalSetup starts an in-memory replica set
 docs/                   # PRD.md, SETUP.md
 ```
 
-Business logic lives in `lib/`, not in route handlers or components. Route handlers: parse with Zod → call a `lib/` function → return.
+Business logic lives in `src/server/`, not in route handlers or components. Route handlers: parse with Zod → call a `src/server/` function → return. Imports use the `@/` alias (points at `src/`).
 
 ## Commands
 
@@ -92,7 +97,7 @@ Before declaring work done: `lint`, `typecheck` and `test` must pass.
 ## Domain rules — do not break these
 
 ### Money
-- Store all amounts as **integer paise** (`number`, never float rupees). Convert only for display via `lib/money.ts`.
+- Store all amounts as **integer paise** (`number`, never float rupees). Convert only for display via `src/lib/money.ts`.
 - Commission computed per booking item with the partner's `commissionPct` (default 10, range 8–12). Round once, at item level, half-up.
 - The price shown to the tourist before payment is the price charged. No hidden add-ons.
 
@@ -108,7 +113,7 @@ Before declaring work done: `lint`, `typecheck` and `test` must pass.
 - Every change to inventory/booking logic needs a concurrency test (parallel holds on the last room-night → exactly one succeeds).
 
 ### Booking state machine
-`held → paid → confirmed → completed`, plus `held → expired`, `paid|confirmed → cancelled → refunded`, `paid → refunded` (partner decline with no rebook), and `expired → paid` / `expired → refunded` (late payment: rebook if the nights are still free, else auto-refund). Transitions are defined in **one** place (`lib/booking/stateMachine.ts`); every transition appends `statusHistory` and an `audit_logs` entry. Never set `booking.status` directly elsewhere.
+`held → paid → confirmed → completed`, plus `held → expired`, `paid|confirmed → cancelled → refunded`, `paid → refunded` (partner decline with no rebook), and `expired → paid` / `expired → refunded` (late payment: rebook if the nights are still free, else auto-refund). Transitions are defined in **one** place (`src/server/booking/stateMachine.ts`); every transition appends `statusHistory` and an `audit_logs` entry. Never set `booking.status` directly elsewhere.
 
 ### Payments (Razorpay)
 - Create the Razorpay order server-side; never trust amounts from the client.
@@ -132,7 +137,7 @@ Before declaring work done: `lint`, `typecheck` and `test` must pass.
 
 ### Messaging (WhatsApp)
 - Business-initiated messages must use **approved templates** (names listed in PRD §6.4). Free-form text only inside the 24-hour customer window.
-- All sends go through `lib/whatsapp/` and are recorded in the `messages` collection with delivery status.
+- All sends go through `src/server/whatsapp/` and are recorded in the `messages` collection with delivery status.
 - Partner Confirm/Decline arrives as a button reply on the WhatsApp webhook — verify the sender number matches the partner on the booking.
 - Partner SLA: escalate to admin if no response in 2 h (30 min for bookings within 7 days).
 
@@ -149,9 +154,9 @@ Before declaring work done: `lint`, `typecheck` and `test` must pass.
 ## Design (from the 10k-websites skill)
 
 The tourist site follows the design and engineering standard of the user's `10k-websites` skill (zip in `.skills/`, gitignored), adapted to Next.js:
-- **Direction:** "the fixed fare". Mist canvas `#eef2ef`, pine ink `#14251f`, rhododendron red `#b3263e` as the rare accent (CTAs, focus, the stamp). Fonts: Bricolage Grotesque (display), Figtree (body), JetBrains Mono (labels). Tokens live in `app/globals.css`.
-- **Signature element:** trips are sold as fare tickets with a perforated tear line and a "Fixed" stamp (`components/catalog/FareTicket.tsx`). One interactive moment: press-and-hold to stamp the Nathula fare (`components/home/HoldToStamp.tsx`).
-- **Hero:** `components/home/Hero.tsx`. Today it shows the hand-drawn range (`components/home/MountainScene.tsx`). When `NEXT_PUBLIC_HERO_VIDEO` points at an encoded scroll video, desktop visitors get the scroll-scrub engine (Blob fetch with watchdog, dt-normalised lerp that rests, gated seeks, five live static-hero gates). The scrub path is untested until a real video exists; band copy and entrances should be re-tuned to the footage then.
+- **Direction:** "the fixed fare". Mist canvas `#eef2ef`, pine ink `#14251f`, rhododendron red `#b3263e` as the rare accent (CTAs, focus, the stamp). Fonts: Bricolage Grotesque (display), Figtree (body), JetBrains Mono (labels). Tokens live in `src/app/globals.css`.
+- **Signature element:** trips are sold as fare tickets with a perforated tear line and a "Fixed" stamp (`src/components/catalog/FareTicket.tsx`). One interactive moment: press-and-hold to stamp the Nathula fare (`src/components/home/HoldToStamp.tsx`).
+- **Hero:** `src/components/home/Hero.tsx`. Today it shows the hand-drawn range (`src/components/home/MountainScene.tsx`). When `NEXT_PUBLIC_HERO_VIDEO` points at an encoded scroll video, desktop visitors get the scroll-scrub engine (Blob fetch with watchdog, dt-normalised lerp that rests, gated seeks, five live static-hero gates). The scrub path is untested until a real video exists; band copy and entrances should be re-tuned to the footage then.
 - **Copy gate before shipping UI copy:** no em dashes, none of: leverage, seamless, empower, unlock, robust, actionable, data-driven, solutions, testament, landscape, delve, elevate. Plain, short sentences.
 - Custom component classes (`.btn`, `.field`, `.ticket`, …) sit in `@layer components` so Tailwind utilities can override them. Keep it that way.
 - Motion: transform and opacity only; honour `prefers-reduced-motion`; looping animations pause on hidden tabs (`body.paused`).
@@ -161,9 +166,9 @@ The tourist site follows the design and engineering standard of the user's `10k-
 - TypeScript strict; no `any` without a comment explaining why.
 - Server Components by default; `"use client"` only where interactivity requires it.
 - Zod schemas are the source of truth for request shapes; infer types from them.
-- Mongoose models in `lib/db/models/<Name>.ts`, one per collection; add indexes in the schema.
-- Use `session` (transaction) parameters explicitly in `lib/inventory` and `lib/booking` functions.
-- Errors: throw typed domain errors (`HoldConflictError`, `InvalidTransitionError`, …) from `lib/`; map to HTTP status in route handlers.
+- Mongoose models in `src/server/db/models/<Name>.ts`, one per collection; add indexes in the schema.
+- Use `session` (transaction) parameters explicitly in `src/server/inventory` and `src/server/booking` functions.
+- Errors: throw typed domain errors (`HoldConflictError`, `InvalidTransitionError`, …) from `src/server/`; map to HTTP status in route handlers.
 - Mobile-first UI: design at 360px width first; tap targets ≥ 44px; keep JS small — many users are on 3G/4G in hills.
 - SEO pages (packages, stays, landing pages) are server-rendered with `generateMetadata` and schema.org JSON-LD.
 - Copy is plain English, short sentences; INR formatted as `₹12,500` (Indian grouping, e.g. `₹1,25,000`).
@@ -203,7 +208,7 @@ Use Razorpay **test mode** keys and WhatsApp test numbers locally; never point l
 
 ## Testing expectations
 
-- `lib/booking`, `lib/inventory`, `lib/payments`, `lib/money.ts`, `lib/dates.ts`: unit + integration tests required for every change.
+- `src/server/booking`, `src/server/inventory`, `src/server/payments`, `src/lib/money.ts`, `src/lib/dates.ts`: unit + integration tests required for every change.
 - Integration tests run MongoDB as a **replica set** (transactions need it).
 - Must-have tests: concurrent hold race, hold expiry release, duplicate webhook, late webhook after expiry, every allowed and forbidden state transition, commission rounding, IST date boundaries, ID purge job.
 - E2E (Playwright, mobile viewport): book a package with Razorpay test payment, upload IDs, see status page.

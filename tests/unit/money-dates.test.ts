@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { commissionFor, formatINR, rupeesToPaise } from "@/lib/money";
 import { addDays, diffDays, isNightDate, istStartOfDay, nightsBetween, todayIST } from "@/lib/dates";
-import { maskIdNumber } from "@/lib/permits/permits";
+import { maskIdNumber } from "@/server/permits/permits";
 import { normalizePhone, maskPhone } from "@/lib/phone";
 
 describe("money", () => {

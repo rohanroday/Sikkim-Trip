@@ -1,13 +1,13 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
 import { createHmac } from "crypto";
-import { Booking, Inventory, PermitRequest, Message } from "@/lib/db/models";
-import { createHold } from "@/lib/booking/createHold";
-import { releaseExpiredHolds } from "@/lib/booking/expire";
-import { handlePaymentCaptured } from "@/lib/booking/payment";
-import { recordPartnerResponse } from "@/lib/booking/confirmations";
-import { cancelBooking, refundPctFor } from "@/lib/booking/cancel";
-import { verifyWebhookSignature } from "@/lib/payments/razorpay";
+import { Booking, Inventory, PermitRequest, Message } from "@/server/db/models";
+import { createHold } from "@/server/booking/createHold";
+import { releaseExpiredHolds } from "@/server/booking/expire";
+import { handlePaymentCaptured } from "@/server/booking/payment";
+import { recordPartnerResponse } from "@/server/booking/confirmations";
+import { cancelBooking, refundPctFor } from "@/server/booking/cancel";
+import { verifyWebhookSignature } from "@/server/payments/razorpay";
 import { inDays, makePackage, makeStay, resetDb, setupDb, TOURIST, TOURIST_PHONE } from "../helpers";
 
 beforeAll(setupDb);

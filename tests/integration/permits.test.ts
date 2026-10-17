@@ -1,10 +1,10 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
-import { Booking, PermitRequest } from "@/lib/db/models";
-import { createHold } from "@/lib/booking/createHold";
-import { handlePaymentCaptured } from "@/lib/booking/payment";
-import { objectExists } from "@/lib/storage/storage";
-import { purgeExpiredGuestDocs, submitGuests, deleteDocsAfterFor } from "@/lib/permits/permits";
+import { Booking, PermitRequest } from "@/server/db/models";
+import { createHold } from "@/server/booking/createHold";
+import { handlePaymentCaptured } from "@/server/booking/payment";
+import { objectExists } from "@/server/storage/storage";
+import { purgeExpiredGuestDocs, submitGuests, deleteDocsAfterFor } from "@/server/permits/permits";
 import { makePackage, makeStay, resetDb, setupDb, TOURIST, TOURIST_PHONE } from "../helpers";
 
 beforeAll(setupDb);

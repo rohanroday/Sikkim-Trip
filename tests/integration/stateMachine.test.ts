@@ -1,7 +1,7 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import mongoose from "mongoose";
-import { BOOKING_STATUSES, Booking, AuditLog, type BookingStatus } from "@/lib/db/models";
-import { canTransition, transitionBooking } from "@/lib/booking/stateMachine";
+import { BOOKING_STATUSES, Booking, AuditLog, type BookingStatus } from "@/server/db/models";
+import { canTransition, transitionBooking } from "@/server/booking/stateMachine";
 import { InvalidTransitionError } from "@/lib/errors";
 import { resetDb, setupDb, TOURIST_PHONE } from "../helpers";
 
