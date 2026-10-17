@@ -1,7 +1,6 @@
 /**
- * Hand-drawn Kanchenjunga range at first light. Used as the static hero and as
- * the poster layer under the scroll video once one exists.
- * Layers carry data-depth so the hero can drift them gently on scroll.
+ * Hand-drawn Kanchenjunga range at first light. Shown in the home hero until a
+ * photo is set with NEXT_PUBLIC_HERO_IMAGE.
  */
 export default function MountainScene({ className = "" }: { className?: string }) {
   return (
@@ -58,7 +57,7 @@ export default function MountainScene({ className = "" }: { className?: string }
         <path fill="#fbfcfb" opacity="0.75" d="M990 260 L1040 320 L1100 300 L1080 318 L1046 334 L1012 300 Z" />
       </g>
 
-      <rect className="mist-a" x="-200" y="470" width="1840" height="120" fill="url(#mistband)" />
+      <rect x="-200" y="470" width="1840" height="120" fill="url(#mistband)" />
 
       <g data-depth="0.09">
         <path
@@ -67,7 +66,7 @@ export default function MountainScene({ className = "" }: { className?: string }
         />
       </g>
 
-      <rect className="mist-b" x="-200" y="600" width="1840" height="110" fill="url(#mistband)" />
+      <rect x="-200" y="600" width="1840" height="110" fill="url(#mistband)" />
 
       <g data-depth="0.16">
         <path fill="url(#near)" d="M0 720 Q180 650 320 690 T640 680 T980 700 T1280 660 T1440 690 L1440 900 L0 900 Z" />

@@ -3,7 +3,6 @@ import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { env } from "@/server/env";
-import VisibilityPause from "@/components/ui/VisibilityPause";
 
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], weight: ["600", "800"], variable: "--font-bricolage", display: "swap" });
 const figtree = Figtree({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-figtree", display: "swap" });
@@ -27,8 +26,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en-IN" className={`${bricolage.variable} ${figtree.variable} ${jetbrains.variable}`}>
       <body>
-        <div className="env-mist" aria-hidden="true" />
-        <VisibilityPause />
         {children}
       </body>
     </html>

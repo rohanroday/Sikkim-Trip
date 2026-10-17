@@ -54,7 +54,7 @@ export default async function BookingPage({ params, searchParams }: Props) {
   const confirmedCount = confirmations.filter((c) => c.status === "confirmed").length;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-28 sm:px-6 sm:pt-32">
+    <div className="mx-auto max-w-3xl px-4 pt-10 sm:px-6 sm:pt-14">
       {(status === "held" || status === "paid") && <AutoRefresh seconds={status === "held" ? 4 : 30} />}
       <p className="kicker">Booking <span className="font-mono">{booking.code}</span></p>
       <h1 className="mt-2 font-display text-4xl font-extrabold tracking-tight">{copy.title}</h1>

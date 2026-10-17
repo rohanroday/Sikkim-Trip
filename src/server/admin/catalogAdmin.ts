@@ -12,6 +12,11 @@ import { NotFoundError, ValidationError } from "@/lib/errors";
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
 const nightDate = z.string().refine(isNightDate, "Use a valid date.");
+/** A photo is a file in public/images (/images/...) or a full https link. */
+const photoUrlSchema = z
+  .string()
+  .trim()
+  .refine((v) => /^\/images\/[\w./-]+$/.test(v) || /^https:\/\/\S+$/.test(v), "Use /images/your-photo.jpg or a full https:// link.");
 const lines = (s: string | undefined) => (s ?? "").split("\n").map((x) => x.trim()).filter(Boolean);
 
 // --- partners ---
@@ -55,7 +60,7 @@ export const propertyInput = z.object({
   amenities: z.string().optional(),
   houseRules: z.string().optional(),
   distances: z.string().optional(), // "Yumthang Valley | 24" per line
-  photoUrl: z.string().trim().url().optional().or(z.literal("")),
+  photoUrl: photoUrlSchema.optional().or(z.literal("")),
   registrationNo: z.string().trim().optional(),
 });
 
@@ -86,6 +91,18 @@ export async function createProperty(raw: unknown, actor: string) {
   });
   await audit({ actor, action: "property.created", entity: "property", entityId: String(p._id), after: { name: p.name } });
   return p;
+}
+
+/** Photos for a stay, one per line, first one is the cover. Max 8. */
+export async function setPropertyPhotos(id: string, text: string, actor: string) {
+  await connectDB();
+  const urls = lines(text);
+  if (urls.length > 8) throw new ValidationError("Up to 8 photos per stay.");
+  const valid = urls.map((u) => photoUrlSchema.parse(u));
+  const property = await Property.findById(id).lean();
+  if (!property) throw new NotFoundError();
+  await Property.updateOne({ _id: id }, { photos: valid.map((url, i) => ({ url, alt: i === 0 ? property.name : `${property.name}, photo ${i + 1}` })) });
+  await audit({ actor, action: "property.photos", entity: "property", entityId: id, after: { count: valid.length } });
 }
 
 export async function setPropertyStatus(id: string, status: "draft" | "live" | "paused", actor: string) {
@@ -219,6 +236,16 @@ export async function createPackage(raw: unknown, actor: string) {
   });
   await audit({ actor, action: "package.created", entity: "package", entityId: String(pkg._id), after: { title: pkg.title, price } });
   return pkg;
+}
+
+/** Cover photo for a trip. Empty text removes it. */
+export async function setPackagePhoto(id: string, url: string, actor: string) {
+  await connectDB();
+  const pkg = await Package.findById(id).lean();
+  if (!pkg) throw new NotFoundError();
+  const clean = url.trim();
+  await Package.updateOne({ _id: id }, clean ? { heroImage: { url: photoUrlSchema.parse(clean), alt: pkg.title } } : { $unset: { heroImage: "" } });
+  await audit({ actor, action: "package.photo", entity: "package", entityId: id });
 }
 
 export async function setPackageStatus(id: string, status: "draft" | "live" | "paused", actor: string) {

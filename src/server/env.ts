@@ -4,7 +4,11 @@ export const env = {
     return process.env.MONGODB_URI ?? "";
   },
   get siteUrl() {
-    return process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const set = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+    // On Vercel, a forgotten localhost value falls back to the project's production URL.
+    const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+    if (vercel && (!set || set.includes("localhost"))) return `https://${vercel}`;
+    return set || "http://localhost:3000";
   },
   get sessionSecret() {
     const s = process.env.SESSION_SECRET;

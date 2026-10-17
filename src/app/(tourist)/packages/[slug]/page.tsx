@@ -5,6 +5,8 @@ import { getPackage } from "@/server/catalog";
 import { formatINR } from "@/lib/money";
 import { env } from "@/server/env";
 import PackageBooker from "@/components/catalog/PackageBooker";
+import StayArt from "@/components/catalog/StayArt";
+import Photo from "@/components/ui/Photo";
 
 export const dynamic = "force-dynamic";
 
@@ -43,11 +45,18 @@ export default async function PackagePage({ params }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-32">
+    <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
       <nav aria-label="Breadcrumb" className="text-sm text-ink-2">
         <Link href="/packages" className="hover:text-ink">Trips</Link> <span aria-hidden="true">/</span> {pkg.title}
       </nav>
-      <div className="mt-6 grid gap-12 lg:grid-cols-[1.5fr_1fr]">
+      <div className="relative mt-6 aspect-[16/9] overflow-hidden rounded-[24px] sm:aspect-[21/9]">
+        {pkg.image ? (
+          <Photo src={pkg.image.url} alt={pkg.image.alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
+        ) : (
+          <StayArt seed={pkg.slug} className="h-full w-full" />
+        )}
+      </div>
+      <div className="mt-10 grid gap-12 lg:grid-cols-[1.5fr_1fr]">
         <div>
           <p className="kicker">{pkg.region}{pkg.permitType !== "none" ? ` · ${pkg.permitType} permit included` : ""}</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{pkg.title}</h1>

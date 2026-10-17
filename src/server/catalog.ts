@@ -27,6 +27,7 @@ export type PackageCard = {
   permitType: string;
   vehicleType: string;
   nextDate: string | null;
+  image: { url: string; alt: string } | null;
 };
 
 function toCard(p: PackageDoc, nextDate: string | null): PackageCard {
@@ -42,6 +43,7 @@ function toCard(p: PackageDoc, nextDate: string | null): PackageCard {
     permitType: p.permitType ?? "none",
     vehicleType: p.vehicleType ?? "",
     nextDate,
+    image: p.heroImage?.url ? { url: p.heroImage.url, alt: p.heroImage.alt || p.title } : null,
   };
 }
 
@@ -152,6 +154,7 @@ export async function listLiveStays(town?: string): Promise<StayCard[]> {
 export type NightCell = { date: NightDate; status: "available" | "taken" | "closed"; price: number | null };
 export type StayDetail = StayCard & {
   description: string;
+  photos: { url: string; alt: string }[];
   amenities: string[];
   houseRules: string[];
   distances: { sight: string; km: number }[];
@@ -198,6 +201,7 @@ export async function getStay(slug: string, now = new Date()): Promise<StayDetai
     freeTonight: roomsOut.some((r) => r.nights[0]?.status === "available"),
     photo: p.photos?.[0]?.url ? { url: p.photos[0].url, alt: p.photos[0].alt ?? p.name } : null,
     description: p.description ?? "",
+    photos: (p.photos ?? []).filter((x) => x.url).map((x) => ({ url: x.url!, alt: x.alt || p.name })),
     amenities: p.amenities ?? [],
     houseRules: p.houseRules ?? [],
     distances: (p.distances ?? []).map((d) => ({ sight: d.sight ?? "", km: d.km ?? 0 })),

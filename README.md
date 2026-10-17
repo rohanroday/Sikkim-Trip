@@ -59,7 +59,7 @@ tests/
 docs/
   PRD.md              product requirements
   SETUP.md            accounts and keys needed to go live
-public/                   static files (icon, hero video later)
+public/                   static files: icon, images/ (your photos, see images/README.md)
 ```
 
 Rule of thumb: client components (`"use client"`) import only from `src/lib/` and `src/components/`, never from `src/server/` (type-only imports are fine). Imports use the `@/` alias, which points at `src/`.

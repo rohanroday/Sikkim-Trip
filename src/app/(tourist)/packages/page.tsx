@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default async function PackagesPage() {
   const packages = await listLivePackages();
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-32">
+    <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
       <p className="kicker">All trips</p>
       <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ maxWidth: "20ch" }}>
         Sikkim trips with one fixed price.

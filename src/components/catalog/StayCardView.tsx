@@ -2,17 +2,13 @@ import Link from "next/link";
 import type { StayCard } from "@/server/catalog";
 import { formatINR } from "@/lib/money";
 import StayArt from "@/components/catalog/StayArt";
+import Photo from "@/components/ui/Photo";
 
 export default function StayCardView({ stay }: { stay: StayCard }) {
   return (
-    <Link href={`/stays/${stay.slug}`} className="ticket group flex flex-col overflow-hidden">
-      <div className="relative aspect-[16/10] overflow-hidden rounded-t-[20px]">
-        {stay.photo ? (
-          // eslint-disable-next-line @next/next/no-img-element -- partner photo URLs come from arbitrary hosts
-          <img src={stay.photo.url} alt={stay.photo.alt} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" loading="lazy" />
-        ) : (
-          <StayArt seed={stay.slug} className="h-full w-full transition-transform duration-700 group-hover:scale-[1.03]" />
-        )}
+    <Link href={`/stays/${stay.slug}`} className="ticket flex flex-col overflow-hidden">
+      <div className="relative aspect-[16/10] overflow-hidden">
+        {stay.photo ? <Photo src={stay.photo.url} alt={stay.photo.alt} /> : <StayArt seed={stay.slug} className="h-full w-full" />}
         <span
           className={`absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wider ${
             stay.freeTonight ? "bg-snow text-ok" : "bg-snow/90 text-ink-2"

@@ -20,7 +20,7 @@ export default async function StaysPage({ searchParams }: Props) {
   const stays = await listLiveStays(town || undefined);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-32">
+    <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
       <p className="kicker">Homestays and small hotels</p>
       <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
         {town ? `Stays in ${town}` : "Stay with a Sikkimese family."}

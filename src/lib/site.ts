@@ -5,6 +5,9 @@ export const site = {
   description:
     "Fixed-price North Sikkim, Nathula and Pelling trips with live homestay availability. Permits filed by registered Sikkim operators.",
   supportWhatsapp: process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP ?? "",
+  /** Home hero photo: a file in public/images (e.g. /images/hero.jpg) or a full https URL. Empty = drawn mountains. */
+  heroImage: process.env.NEXT_PUBLIC_HERO_IMAGE ?? "",
+  /** Optional short muted loop over the hero photo, e.g. /videos/hero.mp4. Needs heroImage as its poster. */
   heroVideo: process.env.NEXT_PUBLIC_HERO_VIDEO ?? "",
 };
 

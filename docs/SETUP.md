@@ -70,6 +70,13 @@ Turn `NEXT_PUBLIC_TEST_MODE` off (it also switches off by itself with `rzp_live_
 - **Legal review** of `/privacy`, `/terms` and `/cancellation-policy` (marked DRAFT in the code), and CA advice on GST and who is seller of record.
 - **Operator registration** check with the Tourism and Civil Aviation Department, and company or LLP registration (needed for Razorpay live mode).
 
-## 5. Optional: the cinematic hero video
+## 5. Photos
 
-The `10k-websites` skill makes a scroll-driven hero video with Higgsfield (paid credits). The site is ready for it: encode the video, put it in `public/hero/`, and set `NEXT_PUBLIC_HERO_VIDEO=/hero/hero-scrub.mp4`. Desktop visitors then get the scroll video. Phones keep the drawn mountain hero.
+Use your own photos (Google Photos is fine), not images from Google Search. See `public/images/README.md`:
+- **Home hero:** `public/images/hero.jpg`, then set `NEXT_PUBLIC_HERO_IMAGE=/images/hero.jpg` in `.env.local` and in Vercel.
+- **Trips:** cover photos in `public/images/trips/`. Set each one in Admin → Packages → Photo.
+- **Stays:** photos in `public/images/stays/`. Set them in Admin → Stays → (a stay) → Photos.
+
+- **Hero video (optional):** `public/videos/hero.mp4` is a 16-second muted loop made from the hero photo. Set `NEXT_PUBLIC_HERO_VIDEO=/videos/hero.mp4`. To use your own clip, export it muted, about 1600 px wide and under 5 MB, and save it with the same name.
+
+Until a photo is set, the site shows drawn mountain art instead. The current photos are AI-generated placeholders: replace stay photos with real photos of each homestay before taking real bookings.

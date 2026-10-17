@@ -14,8 +14,8 @@ export function SiteNav() {
     { href: "/#faq", label: "Questions" },
   ];
   return (
-    <header className="absolute inset-x-0 top-0 z-30">
-      <nav aria-label="Main" className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
+    <header className="relative z-30 border-b border-line/70 bg-canvas">
+      <nav aria-label="Main" className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-extrabold text-ink">
           <svg viewBox="0 0 64 64" className="h-8 w-8" aria-hidden="true">
             <rect width="64" height="64" rx="14" fill="#14251f" />
@@ -32,10 +32,13 @@ export function SiteNav() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link href="/packages" className="btn btn-primary min-h-11 px-5">Book a trip</Link>
+          </li>
         </ul>
         <details className="relative md:hidden">
           <summary className="btn btn-ghost list-none bg-snow/80 px-4 [&::-webkit-details-marker]:hidden">Menu</summary>
-          <ul className="absolute right-0 mt-2 w-52 rounded-2xl bg-panel p-2 shadow-xl">
+          <ul className="absolute right-0 z-40 mt-2 w-52 rounded-2xl border border-line bg-panel p-2 shadow-xl">
             {links.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="flex min-h-12 items-center rounded-xl px-3 hover:bg-panel-2">
@@ -55,7 +58,7 @@ export function TestModeBanner() {
   if (!env.testMode) return null;
   return (
     <div role="note" className="relative z-40 bg-warn text-center text-sm font-medium text-snow">
-      <p className="mx-auto max-w-6xl px-4 py-2 sm:px-6">Test mode. No real bookings or payments are taken on this site yet.</p>
+      <p className="mx-auto max-w-6xl px-4 py-2 sm:px-6">Test mode. No real bookings or payments yet. Listings are samples and photos are illustrative.</p>
     </div>
   );
 }

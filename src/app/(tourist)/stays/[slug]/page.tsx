@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getStay } from "@/server/catalog";
 import { formatINR } from "@/lib/money";
 import StayArt from "@/components/catalog/StayArt";
+import Photo from "@/components/ui/Photo";
 import StayBooker from "@/components/catalog/StayBooker";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export default async function StayPage({ params, searchParams }: Props) {
   };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 pt-28 sm:px-6 sm:pt-32">
+    <div className="mx-auto max-w-6xl px-4 pt-10 sm:px-6 sm:pt-14">
       <nav aria-label="Breadcrumb" className="text-sm text-ink-2">
         <Link href="/stays" className="hover:text-ink">Homestays</Link> <span aria-hidden="true">/</span>{" "}
         <Link href={`/stays?town=${stay.town}`} className="hover:text-ink">{stay.town}</Link>
@@ -44,14 +45,26 @@ export default async function StayPage({ params, searchParams }: Props) {
       <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{stay.name}</h1>
       <p className="mt-2 text-ink-2">{stay.town}, Sikkim · {stay.type === "homestay" ? "Family-run homestay" : "Hotel"}</p>
 
-      <div className="mt-8 overflow-hidden rounded-[24px]">
-        {stay.photo ? (
-          // eslint-disable-next-line @next/next/no-img-element -- partner photo URLs come from arbitrary hosts
-          <img src={stay.photo.url} alt={stay.photo.alt} className="aspect-[21/9] w-full object-cover" />
-        ) : (
-          <StayArt seed={stay.slug} className="aspect-[21/9] w-full" />
-        )}
-      </div>
+      {stay.photos.length >= 3 ? (
+        <div className="mt-8 grid gap-2 overflow-hidden rounded-[24px] sm:grid-cols-[2fr_1fr] sm:grid-rows-2">
+          <div className="relative aspect-[4/3] sm:row-span-2 sm:aspect-auto">
+            <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 640px) 100vw, 66vw" />
+          </div>
+          {stay.photos.slice(1, 3).map((p) => (
+            <div key={p.url} className="relative hidden aspect-[4/3] sm:block">
+              <Photo src={p.url} alt={p.alt} sizes="33vw" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[24px] sm:aspect-[21/9]">
+          {stay.photos[0] ? (
+            <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
+          ) : (
+            <StayArt seed={stay.slug} className="h-full w-full" />
+          )}
+        </div>
+      )}
 
       <div className="mt-10 grid gap-12 lg:grid-cols-[1.4fr_1fr]">
         <div>

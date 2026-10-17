@@ -11,8 +11,10 @@ import {
   createPartner,
   createProperty,
   editInventory,
+  setPackagePhoto,
   setPackageStatus,
   setPartnerVerification,
+  setPropertyPhotos,
   setPropertyStatus,
 } from "@/server/admin/catalogAdmin";
 import { createClosure, endClosure, notifyAffected } from "@/server/admin/routesAdmin";
@@ -97,6 +99,21 @@ export async function createPackageAction(fd: FormData) {
     if (!data.floorRupees) delete data.floorRupees;
     const p = await createPackage(data, actor);
     return `Created ${p.title} as a draft. Add departures, then set it live.`;
+  });
+}
+
+export async function setPackagePhotoAction(fd: FormData) {
+  return run("/admin/packages", async (actor) => {
+    await setPackagePhoto(str(fd, "id"), str(fd, "url"), actor);
+    return "Trip photo saved.";
+  });
+}
+
+export async function setPropertyPhotosAction(fd: FormData) {
+  const id = str(fd, "id");
+  return run(`/admin/stays/${id}`, async (actor) => {
+    await setPropertyPhotos(id, str(fd, "photos"), actor);
+    return "Photos saved.";
   });
 }
 

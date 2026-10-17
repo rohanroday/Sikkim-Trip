@@ -4,7 +4,7 @@ import { Departure, Package, Partner, Property, ROUTES, type PackageDoc, type Pa
 import { formatINR } from "@/lib/money";
 import { addDays, todayIST } from "@/lib/dates";
 import { Area, Badge, Field, Flash, PageTitle, Panel, Select, Table } from "@/components/admin/ui";
-import { addDeparturesAction, createPackageAction, setPackageStatusAction } from "../actions";
+import { addDeparturesAction, createPackageAction, setPackagePhotoAction, setPackageStatusAction } from "../actions";
 
 export default async function AdminPackages({ searchParams }: { searchParams: Promise<{ m?: string }> }) {
   const { m } = await searchParams;
@@ -23,7 +23,7 @@ export default async function AdminPackages({ searchParams }: { searchParams: Pr
     <>
       <PageTitle title="Packages" sub="Fixed-price trips. Each needs a registered operator and open departure dates." />
       <Flash m={m} />
-      <Table head={["Trip", "Operator", "Price", "Floor", "Upcoming dates", "Status", ""]}>
+      <Table head={["Trip", "Operator", "Price", "Floor", "Upcoming dates", "Photo", "Status", ""]}>
         {pkgs.map((p) => (
           <tr key={String(p._id)}>
             <td>{p.status === "live" ? <Link href={`/packages/${p.slug}`} className="underline">{p.title}</Link> : p.title}<br /><span className="font-mono text-xs text-ink-2">{String(p._id)}</span></td>
@@ -31,6 +31,13 @@ export default async function AdminPackages({ searchParams }: { searchParams: Pr
             <td>{formatINR(p.price)} / {p.priceUnit}</td>
             <td>{p.priceFloorRef ? formatINR(p.priceFloorRef) : "–"}</td>
             <td>{depBy.get(String(p._id)) ?? 0}</td>
+            <td>
+              <form action={setPackagePhotoAction} className="flex gap-1">
+                <input type="hidden" name="id" value={String(p._id)} />
+                <input name="url" defaultValue={p.heroImage?.url ?? ""} placeholder="/images/trips/..." aria-label={`Photo for ${p.title}`} className="field min-h-9 w-44 py-1 text-xs" />
+                <button className="btn btn-ghost min-h-9 px-3 text-xs">Save</button>
+              </form>
+            </td>
             <td><Badge value={p.status ?? "draft"} /></td>
             <td>
               <form action={setPackageStatusAction} className="flex gap-1">

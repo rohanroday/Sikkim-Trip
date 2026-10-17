@@ -5,7 +5,7 @@ import { Inventory, Property, Room, type PropertyDoc, type RoomDoc } from "@/ser
 import { addDays, todayIST } from "@/lib/dates";
 import { formatINR } from "@/lib/money";
 import { Badge, Field, Flash, PageTitle, Panel, Select } from "@/components/admin/ui";
-import { addRoomAction, inventoryAction, setPropertyStatusAction } from "../../actions";
+import { addRoomAction, inventoryAction, setPropertyPhotosAction, setPropertyStatusAction } from "../../actions";
 
 const DAYS = 30;
 const LETTER: Record<string, string> = { available: "A", held: "H", booked: "B", blocked: "X" };
@@ -97,6 +97,23 @@ export default async function AdminStay({ params, searchParams }: { params: Prom
             <Field label="Sleeps" name="capacity" type="number" required defaultValue={2} />
             <Field label="Base price (₹)" name="priceRupees" type="number" required defaultValue={2500} />
             <div className="sm:col-span-3"><button className="btn btn-ghost">Add room</button></div>
+          </form>
+        </Panel>
+
+        <Panel title="Photos">
+          <form action={setPropertyPhotosAction} className="grid gap-3">
+            <input type="hidden" name="id" value={id} />
+            <label className="label" htmlFor="f-photos">One photo per line. The first one is the cover.</label>
+            <textarea
+              id="f-photos"
+              name="photos"
+              rows={5}
+              className="field font-mono text-xs"
+              defaultValue={(p.photos ?? []).map((x) => x.url).join("\n")}
+              placeholder={"/images/stays/yumthang-1.jpg\n/images/stays/yumthang-2.jpg"}
+            />
+            <p className="hint">Put files in public/images/stays/ and write /images/stays/name.jpg, or paste an https link. Up to 8.</p>
+            <div><button className="btn btn-ghost">Save photos</button></div>
           </form>
         </Panel>
       </div>

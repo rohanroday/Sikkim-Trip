@@ -100,7 +100,10 @@ async function main() {
   for (const s of stays) {
     const partner = await Partner.create({ type: "homestay", ...s.partner, verificationStatus: "verified", commissionPct: 10 });
     const slug = s.property.name.toLowerCase().replace(/\(sample\)/, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + "-" + s.property.town.toLowerCase();
-    const property = await Property.create({ ...s.property, partnerId: partner._id, slug, type: "homestay", status: "live" });
+    const key = s.property.town.toLowerCase();
+    // Photos in public/images/stays/<town>-1..3.jpg (illustrative for the sample listings).
+    const photos = [1, 2, 3].map((n) => ({ url: `/images/stays/${key}-${n}.jpg`, alt: n === 1 ? s.property.name : `${s.property.name}, photo ${n}` }));
+    const property = await Property.create({ ...s.property, partnerId: partner._id, slug, type: "homestay", status: "live", photos });
     propertyIds[s.property.town] = property._id;
     for (const r of s.rooms) {
       const room = await Room.create({ propertyId: property._id, name: r.name, capacity: r.capacity, basePrice: rupeesToPaise(r.price) });
@@ -117,6 +120,7 @@ async function main() {
   const packages = [
     {
       slug: "north-sikkim-2n3d",
+      heroImage: { url: "/images/trips/north-sikkim.jpg", alt: "Yumthang Valley in North Sikkim" },
       title: "North Sikkim 2N/3D",
       region: "North Sikkim",
       summary: "Lachung, Yumthang Valley and Zero Point. Two nights in a Lachung homestay, cab and permit included.",
@@ -139,6 +143,7 @@ async function main() {
     },
     {
       slug: "nathula-tsomgo-day-trip",
+      heroImage: { url: "/images/trips/nathula.jpg", alt: "Tsomgo Lake on the road to Nathula" },
       title: "Nathula and Tsomgo day trip",
       region: "East Sikkim",
       summary: "Tsomgo Lake, Baba Mandir and the Nathula pass in one private cab, at the state-notified fare.",
@@ -158,6 +163,7 @@ async function main() {
     },
     {
       slug: "pelling-weekend",
+      heroImage: { url: "/images/trips/pelling.jpg", alt: "Kanchenjunga from Pelling" },
       title: "Pelling weekend",
       region: "West Sikkim",
       summary: "Two slow nights facing Kanchenjunga. Pemayangtse, Rabdentse ruins and the Skywalk. No permit needed.",

@@ -24,7 +24,7 @@ export default async function CheckoutPage({ searchParams }: Props) {
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-10 px-4 pt-28 sm:px-6 sm:pt-32 lg:grid-cols-[1.2fr_1fr]">
+    <div className="mx-auto grid max-w-5xl gap-10 px-4 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[1.2fr_1fr]">
       <div>
         <p className="kicker">Book</p>
         <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">Your details</h1>
