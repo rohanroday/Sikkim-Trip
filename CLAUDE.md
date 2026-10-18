@@ -90,7 +90,7 @@ npm run typecheck    # tsc --noEmit
 npm test             # vitest (downloads a mongod binary on first run)
 ```
 
-Local test mode: with no WhatsApp keys, OTP codes are shown on screen and messages are logged as "skipped". With no Razorpay keys, checkout uses `/api/dev/simulate-payment` (same code path as the webhook). With no S3 keys, files go to a MongoDB GridFS bucket (`guest_files`) in every environment. The OTP and payment fallbacks are disabled when `NODE_ENV=production`, except that `NEXT_PUBLIC_TEST_MODE=true` keeps sign-in codes on screen (never with `rzp_live_` keys) and shows a test-mode banner. Admin sign-in needs your number in `ADMIN_PHONES`.
+Local test mode: with no WhatsApp keys, OTP codes are shown on screen and messages are logged as "skipped". With no Razorpay keys, checkout uses `/api/dev/simulate-payment` (same code path as the webhook). With no S3 keys, files go to a MongoDB GridFS bucket (`guest_files`) in every environment. The OTP and payment fallbacks are disabled when `NODE_ENV=production`, except that `NEXT_PUBLIC_TEST_MODE=true` keeps sign-in codes on screen (never with `rzp_live_` keys). There is no public test banner. Admin sign-in needs your number in `ADMIN_PHONES`.
 
 Before declaring work done: `lint`, `typecheck` and `test` must pass.
 

@@ -1,4 +1,4 @@
-import { RouteBanner, SiteFooter, SiteNav, TestModeBanner } from "@/components/layout/SiteChrome";
+import { RouteBanner, SiteFooter, SiteNav } from "@/components/layout/SiteChrome";
 import SmoothMotion from "@/components/motion/SmoothMotion";
 
 export default function TouristLayout({ children }: { children: React.ReactNode }) {
@@ -6,7 +6,6 @@ export default function TouristLayout({ children }: { children: React.ReactNode 
     <>
       <a href="#main" className="skip-link">Skip to content</a>
       <SmoothMotion />
-      <TestModeBanner />
       <RouteBanner />
       <div className="relative">
         <SiteNav />

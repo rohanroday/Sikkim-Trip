@@ -60,7 +60,8 @@ export default function SmoothMotion() {
       const media = document.querySelector("[data-hero-media]");
       if (media) intro.fromTo(media, { scale: 1.14 }, { scale: 1, duration: 2.4 }, 0);
       const words = gsap.utils.toArray<HTMLElement>("[data-hero-word]");
-      if (words.length) intro.fromTo(words, { yPercent: 110 }, { yPercent: 0, duration: 1.3, stagger: 0.07 }, 0.15);
+      // y: 0 on both ends stops GSAP folding the CSS pre-state offset into a permanent y.
+      if (words.length) intro.fromTo(words, { yPercent: 110, y: 0 }, { yPercent: 0, y: 0, duration: 1.3, stagger: 0.07 }, 0.15);
       const items = gsap.utils.toArray<HTMLElement>("[data-hero-item]");
       if (items.length) intro.fromTo(items, { autoAlpha: 0, y: 28 }, { autoAlpha: 1, y: 0, duration: 1.1, stagger: 0.12 }, 0.45);
 

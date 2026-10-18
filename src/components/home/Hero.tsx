@@ -4,10 +4,18 @@ import Photo from "@/components/ui/Photo";
 
 const HEADLINE = "One fixed price. Permits handled.";
 
-/** Plain HTML so `muted` is in the server markup; browsers only autoplay muted video. */
+/**
+ * Plain HTML so `muted` is in the server markup; browsers only autoplay muted video.
+ * Phones get a lighter cut when one exists next to it: hero.mp4 → hero-mobile.mp4.
+ */
 function videoMarkup(src: string, poster: string): string {
   const esc = (s: string) => s.replace(/[&"<>]/g, (c) => ({ "&": "&amp;", '"': "&quot;", "<": "&lt;", ">": "&gt;" })[c]!);
-  return `<video class="hero-video absolute inset-0 h-full w-full object-cover" src="${esc(src)}" poster="${esc(poster)}" autoplay muted loop playsinline preload="metadata" aria-hidden="true" tabindex="-1"></video>`;
+  const mobile = src.replace(/\.mp4$/i, "-mobile.mp4");
+  const sources =
+    mobile !== src
+      ? `<source src="${esc(src)}" type="video/mp4" media="(min-width: 768px)"><source src="${esc(mobile)}" type="video/mp4">`
+      : `<source src="${esc(src)}" type="video/mp4">`;
+  return `<video class="hero-video absolute inset-0 h-full w-full object-cover" poster="${esc(poster)}" autoplay muted loop playsinline preload="auto" aria-hidden="true" tabindex="-1">${sources}</video>`;
 }
 
 /**

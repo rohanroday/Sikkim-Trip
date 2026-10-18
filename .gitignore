@@ -60,3 +60,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# --- Original media (raw AI/phone clips): kept locally, not deployed ---
+media-src/
