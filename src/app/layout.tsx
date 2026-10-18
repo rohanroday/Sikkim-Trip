@@ -22,9 +22,19 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+/**
+ * Runs before first paint: marks the page as animated (so elements start in their
+ * pre-animation state without a flash). Skipped for reduced motion. If the motion
+ * script never starts, everything is shown again after 3 seconds.
+ */
+const MOTION_BOOT = `(function(){try{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;var d=document.documentElement;d.classList.add("motion");setTimeout(function(){if(!window.__motionReady)d.classList.remove("motion")},3000)}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN" className={`${bricolage.variable} ${figtree.variable} ${jetbrains.variable}`}>
+    <html lang="en-IN" className={`${bricolage.variable} ${figtree.variable} ${jetbrains.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
+      </head>
       <body>
         {children}
       </body>

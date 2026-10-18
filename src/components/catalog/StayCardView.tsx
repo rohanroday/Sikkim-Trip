@@ -7,7 +7,7 @@ import Photo from "@/components/ui/Photo";
 export default function StayCardView({ stay }: { stay: StayCard }) {
   return (
     <Link href={`/stays/${stay.slug}`} className="ticket flex flex-col overflow-hidden">
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="media relative aspect-[16/10] overflow-hidden">
         {stay.photo ? <Photo src={stay.photo.url} alt={stay.photo.alt} /> : <StayArt seed={stay.slug} className="h-full w-full" />}
         <span
           className={`absolute left-3 top-3 rounded-full px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wider ${

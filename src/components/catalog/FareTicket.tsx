@@ -10,7 +10,7 @@ export default function FareTicket({ pkg, className = "" }: { pkg: PackageCard; 
   const nights = Math.max(0, pkg.durationDays - 1);
   return (
     <Link href={`/packages/${pkg.slug}`} className={`ticket flex flex-col overflow-hidden ${className}`}>
-      <div className="relative aspect-[16/10] overflow-hidden">
+      <div className="media relative aspect-[16/10] overflow-hidden">
         {pkg.image ? <Photo src={pkg.image.url} alt={pkg.image.alt} /> : <StayArt seed={pkg.slug} className="h-full w-full" />}
         {pkg.permitType !== "none" && (
           <span className="absolute left-3 top-3 rounded-full bg-snow/95 px-2.5 py-1 font-mono text-[0.7rem] font-medium uppercase tracking-wider text-ink">

@@ -19,7 +19,7 @@ export default async function PackagesPage() {
       <p className="mt-4 text-lg text-ink-2" style={{ maxWidth: "54ch" }}>
         Each price covers the stays, the cab and driver, and the permit filing where needed. Pick a trip to see dates and seats left.
       </p>
-      <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div data-reveal-stagger className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {packages.map((p) => (
           <FareTicket key={p.slug} pkg={p} />
         ))}

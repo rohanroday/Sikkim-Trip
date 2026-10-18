@@ -171,6 +171,37 @@ body {
   a, button { -webkit-tap-highlight-color: transparent; }
 }
 
+/* --- Smooth scroll (Lenis) --- */
+html.lenis,
+html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* --- Pre-animation state (only when the motion script is on; GSAP reveals them) --- */
+.motion [data-reveal],
+.motion [data-reveal-stagger] > *,
+.motion [data-hero-item],
+.motion [data-stamp] { visibility: hidden; }
+.motion [data-hero-word] { transform: translateY(110%); }
+
+/* Hero headline words rise out of a mask. Padding keeps descenders (g, y, p) whole. */
+.word-mask { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.14em; margin-bottom: -0.14em; }
+.word-mask > span { display: inline-block; will-change: transform; }
+
+/* Card photos: slow zoom on hover */
+.media img { transition: transform 1.4s var(--ease-out); }
+.ticket:hover .media img { transform: scale(1.05); }
+
+/* Header: a soft frosted bar that stays at the top */
+.site-header {
+  position: sticky;
+  top: 0;
+  background: rgba(238, 242, 239, 0.78);
+  backdrop-filter: saturate(1.4) blur(14px);
+  -webkit-backdrop-filter: saturate(1.4) blur(14px);
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* The still hero photo underneath is shown instead. */
   .hero-video { display: none; }

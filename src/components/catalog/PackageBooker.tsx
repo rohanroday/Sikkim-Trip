@@ -37,7 +37,7 @@ export default function PackageBooker(props: {
         <>
           <fieldset className="mt-6">
             <legend className="label">Pick a start date</legend>
-            <div className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pr-1">
+            <div data-lenis-prevent className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto pr-1">
               {props.departures.map((d) => {
                 const disabled = d.closed || d.seatsLeft <= 0;
                 const selected = d.date === date;

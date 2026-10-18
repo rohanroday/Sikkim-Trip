@@ -14,7 +14,7 @@ export function SiteNav() {
     { href: "/#faq", label: "Questions" },
   ];
   return (
-    <header className="relative z-30 border-b border-line/70 bg-canvas">
+    <header className="site-header z-30 border-b border-line/70">
       <nav aria-label="Main" className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <Link href="/" className="flex items-center gap-2 font-display text-lg font-extrabold text-ink">
           <svg viewBox="0 0 64 64" className="h-8 w-8" aria-hidden="true">

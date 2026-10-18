@@ -50,11 +50,13 @@ export default async function PackagePage({ params }: Props) {
         <Link href="/packages" className="hover:text-ink">Trips</Link> <span aria-hidden="true">/</span> {pkg.title}
       </nav>
       <div className="relative mt-6 aspect-[16/9] overflow-hidden rounded-[24px] sm:aspect-[21/9]">
-        {pkg.image ? (
-          <Photo src={pkg.image.url} alt={pkg.image.alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
-        ) : (
-          <StayArt seed={pkg.slug} className="h-full w-full" />
-        )}
+        <div data-parallax className="absolute inset-x-0 -bottom-[7%] -top-[7%]">
+          {pkg.image ? (
+            <Photo src={pkg.image.url} alt={pkg.image.alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
+          ) : (
+            <StayArt seed={pkg.slug} className="h-full w-full" />
+          )}
+        </div>
       </div>
       <div className="mt-10 grid gap-12 lg:grid-cols-[1.5fr_1fr]">
         <div>

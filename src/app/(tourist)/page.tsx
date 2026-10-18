@@ -30,10 +30,10 @@ const STEPS = [
 
 function SectionHead({ kicker, title, body, action }: { kicker: string; title: string; body?: string; action?: React.ReactNode }) {
   return (
-    <div className="flex flex-wrap items-end justify-between gap-4">
+    <div data-reveal className="flex flex-wrap items-end justify-between gap-4">
       <div>
         <p className="kicker">{kicker}</p>
-        <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl" style={{ maxWidth: "22ch" }}>{title}</h2>
+        <h2 className="mt-3 font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-5xl" style={{ maxWidth: "20ch" }}>{title}</h2>
         {body && <p className="mt-3 text-lg text-ink-2" style={{ maxWidth: "54ch" }}>{body}</p>}
       </div>
       {action}
@@ -53,15 +53,15 @@ export default async function HomePage() {
     <>
       <Hero image={site.heroImage} video={site.heroVideo} />
 
-      <div className="relative z-10 mx-auto -mt-12 max-w-5xl px-4 sm:px-6">
+      <div data-hero-item className="relative z-10 mx-auto -mt-14 max-w-5xl px-4 sm:px-6">
         <SearchBar />
       </div>
 
-      <section className="mx-auto max-w-6xl px-4 pt-14 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
         <TrustStrip />
       </section>
 
-      <section id="trips" className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+      <section id="trips" className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
         <SectionHead
           kicker="Fixed-price trips"
           title="The price on the ticket is the price you pay."
@@ -69,7 +69,7 @@ export default async function HomePage() {
           action={<Link href="/packages" className="btn btn-ghost">See every trip</Link>}
         />
         {packages.length ? (
-          <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div data-reveal-stagger className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {packages.slice(0, 3).map((p) => (
               <FareTicket key={p.slug} pkg={p} />
             ))}
@@ -80,14 +80,14 @@ export default async function HomePage() {
       </section>
 
       {stays.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+        <section className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
           <SectionHead
             kicker="Homestays with live rooms"
             title="Sleep in a family home."
             body="Small, family-run stays in Gangtok, Pelling and Lachung. The calendar shows the rooms that are really free."
             action={<Link href="/stays" className="btn btn-ghost">All homestays</Link>}
           />
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div data-reveal-stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {stays.map((s) => (
               <StayCardView key={s.slug} stay={s} />
             ))}
@@ -95,10 +95,10 @@ export default async function HomePage() {
         </section>
       )}
 
-      <section id="how" className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-        <div className="rounded-[28px] bg-panel-2/70 p-6 sm:p-10">
+      <section id="how" className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
+        <div className="rounded-[32px] bg-panel-2/70 p-6 sm:p-12">
           <SectionHead kicker="How it works" title="Four simple steps to Lachung." />
-          <ol className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <ol data-reveal-stagger className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {STEPS.map((s) => (
               <li key={s.n}>
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink font-display font-extrabold text-snow">{s.n}</span>
@@ -110,11 +110,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-        <div className="grid items-center gap-10 lg:grid-cols-[1.2fr_1fr]">
-          <div>
+      <section className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.2fr_1fr]">
+          <div data-reveal>
             <p className="kicker">Why the price holds</p>
-            <h2 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-4xl" style={{ maxWidth: "18ch" }}>
+            <h2 className="mt-3 font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-5xl" style={{ maxWidth: "18ch" }}>
               Fares the state sets. Operators the state registers.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-ink-2" style={{ maxWidth: "50ch" }}>
@@ -122,13 +122,13 @@ export default async function HomePage() {
               price of every trip, so there is nothing to haggle over when you arrive.
             </p>
           </div>
-          <div className="ticket p-7 sm:p-8">
+          <div data-reveal className="ticket p-7 sm:p-9">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="kicker">State-notified fare</p>
                 <p className="mt-2 font-display text-2xl font-extrabold">Gangtok to Nathula</p>
               </div>
-              <span className="stamp text-xs">Fixed</span>
+              <span data-stamp className="stamp text-xs">Fixed</span>
             </div>
             <p className="mt-6 font-display text-5xl font-extrabold tracking-tight">{formatINR(rupeesToPaise(6500))}</p>
             <p className="mt-2 text-sm text-ink-2">Round trip, normal class. {formatINR(rupeesToPaise(7000))} for luxury.</p>
@@ -140,9 +140,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="faq" className="mx-auto max-w-3xl px-4 pt-20 sm:px-6">
+      <section id="faq" className="mx-auto max-w-3xl px-4 pt-24 sm:px-6 sm:pt-32">
         <SectionHead kicker="Questions people ask" title="Before you book" />
-        <div className="mt-8 divide-y divide-line rounded-2xl border border-line/80 bg-panel">
+        <div data-reveal className="mt-10 divide-y divide-line rounded-2xl border border-line/80 bg-panel">
           {FAQ.map((f) => (
             <details key={f.q} className="group p-5 sm:p-6">
               <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold text-ink [&::-webkit-details-marker]:hidden">
@@ -155,8 +155,8 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
-        <div className="flex flex-col items-start gap-6 rounded-[28px] bg-ink p-8 text-snow sm:p-12 md:flex-row md:items-center md:justify-between">
+      <section className="mx-auto max-w-6xl px-4 pt-24 sm:px-6 sm:pt-32">
+        <div data-reveal className="flex flex-col items-start gap-6 rounded-[32px] bg-ink p-8 text-snow sm:p-14 md:flex-row md:items-center md:justify-between">
           <div>
             <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl" style={{ maxWidth: "20ch" }}>
               Pick your dates. We hold them while you pay.

@@ -24,7 +24,7 @@ const ITEMS = [
 
 export default function TrustStrip() {
   return (
-    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <ul data-reveal-stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {ITEMS.map((i) => (
         <li key={i.title} className="flex gap-3 rounded-2xl border border-line/80 bg-panel p-4">
           <svg viewBox="0 0 24 24" className="mt-0.5 h-6 w-6 shrink-0 text-glacier" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

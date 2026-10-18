@@ -31,7 +31,7 @@ export default async function StaysPage({ searchParams }: Props) {
       <div className="mt-8">
         <SearchBar town={town} date={date} />
       </div>
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div data-reveal-stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {stays.map((s) => (
           <StayCardView key={s.slug} stay={s} />
         ))}

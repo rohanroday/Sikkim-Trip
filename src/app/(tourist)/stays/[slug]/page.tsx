@@ -47,8 +47,10 @@ export default async function StayPage({ params, searchParams }: Props) {
 
       {stay.photos.length >= 3 ? (
         <div className="mt-8 grid gap-2 overflow-hidden rounded-[24px] sm:grid-cols-[2fr_1fr] sm:grid-rows-2">
-          <div className="relative aspect-[4/3] sm:row-span-2 sm:aspect-auto">
-            <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 640px) 100vw, 66vw" />
+          <div className="relative aspect-[4/3] overflow-hidden sm:row-span-2 sm:aspect-auto">
+            <div data-parallax className="absolute inset-x-0 -bottom-[7%] -top-[7%]">
+              <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 640px) 100vw, 66vw" />
+            </div>
           </div>
           {stay.photos.slice(1, 3).map((p) => (
             <div key={p.url} className="relative hidden aspect-[4/3] sm:block">
@@ -58,11 +60,13 @@ export default async function StayPage({ params, searchParams }: Props) {
         </div>
       ) : (
         <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-[24px] sm:aspect-[21/9]">
-          {stay.photos[0] ? (
-            <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
-          ) : (
-            <StayArt seed={stay.slug} className="h-full w-full" />
-          )}
+          <div data-parallax className="absolute inset-x-0 -bottom-[7%] -top-[7%]">
+            {stay.photos[0] ? (
+              <Photo src={stay.photos[0].url} alt={stay.photos[0].alt} priority sizes="(max-width: 1200px) 100vw, 1152px" />
+            ) : (
+              <StayArt seed={stay.slug} className="h-full w-full" />
+            )}
+          </div>
         </div>
       )}
 
