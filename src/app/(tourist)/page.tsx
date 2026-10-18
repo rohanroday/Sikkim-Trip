@@ -144,10 +144,10 @@ export default async function HomePage() {
         <SectionHead kicker="Questions people ask" title="Before you book" />
         <div data-reveal className="mt-10 divide-y divide-line rounded-2xl border border-line/80 bg-panel">
           {FAQ.map((f) => (
-            <details key={f.q} className="group p-5 sm:p-6">
+            <details key={f.q} data-accordion className="group p-5 sm:p-6">
               <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold text-ink [&::-webkit-details-marker]:hidden">
                 {f.q}
-                <span aria-hidden="true" className="text-xl text-ink-2 group-open:rotate-45">+</span>
+                <span aria-hidden="true" className="text-xl text-ink-2 transition-transform duration-300 group-open:rotate-45">+</span>
               </summary>
               <p className="mt-3 leading-relaxed text-ink-2">{f.a}</p>
             </details>

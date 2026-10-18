@@ -91,6 +91,9 @@ body {
   transition: background-color 0.25s var(--ease-out), transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
   text-shadow: none;
 }
+@media (hover: hover) {
+  .btn:hover { transform: translateY(-1px); }
+}
 .btn:active { transform: translateY(1px) scale(0.99); }
 .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 6px 20px -8px rgba(179, 38, 62, 0.6); }
 .btn-primary:hover { background: var(--accent-hover); }
@@ -200,7 +203,10 @@ html.lenis body { height: auto; }
   background: rgba(238, 242, 239, 0.78);
   backdrop-filter: saturate(1.4) blur(14px);
   -webkit-backdrop-filter: saturate(1.4) blur(14px);
+  transition: transform 0.55s var(--ease-out);
 }
+/* Slides away while reading down, back on the first scroll up (toggled by SmoothMotion). */
+.site-header.is-hidden { transform: translateY(-100%); }
 
 @media (prefers-reduced-motion: reduce) {
   /* The still hero photo underneath is shown instead. */
