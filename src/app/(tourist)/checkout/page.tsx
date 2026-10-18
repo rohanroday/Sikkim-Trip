@@ -34,7 +34,7 @@ export default async function CheckoutPage({ searchParams }: Props) {
             request={quote.request}
             total={quote.total}
             signedInPhone={session?.role === "tourist" ? session.phone : null}
-            razorpayKey={process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID ?? ""}
+            razorpayKey={process.env.RAZORPAY_KEY_ID ?? ""}
           />
         </div>
       </div>

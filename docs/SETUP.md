@@ -30,7 +30,7 @@ This gives you a public site with the real database and Razorpay **test** paymen
    |---|---|
    | `MONGODB_URI` | Atlas connection string |
    | `NEXT_PUBLIC_SITE_URL` | `https://<your-app>.vercel.app` |
-   | `RAZORPAY_KEY_ID` and `NEXT_PUBLIC_RAZORPAY_KEY_ID` | test key id (`rzp_test_...`) |
+   | `RAZORPAY_KEY_ID` | test key id (`rzp_test_...`) |
    | `RAZORPAY_KEY_SECRET` | test key secret |
    | `RAZORPAY_WEBHOOK_SECRET` | the secret you set in step 5 |
    | `SESSION_SECRET` | random, 32+ characters |
@@ -54,7 +54,7 @@ Turn `NEXT_PUBLIC_TEST_MODE` off (it also switches off by itself with `rzp_live_
 | # | What | Why | Env variables | Notes |
 |---|---|---|---|---|
 | 1 | **MongoDB Atlas** cluster, Mumbai region | Live database | `MONGODB_URI` | Free M0 is fine to start. Atlas clusters are replica sets, so transactions work. |
-| 2 | **Razorpay** account (test keys first, then live) | Take payments, refunds | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `NEXT_PUBLIC_RAZORPAY_KEY_ID`, `RAZORPAY_WEBHOOK_SECRET` | Live mode needs your company or LLP and KYC. Add a webhook to `https://<your-domain>/api/payments/razorpay/webhook` for `payment.captured` and `refund.processed`. Turn on **Route** later for automatic partner payouts (Phase 2). |
+| 2 | **Razorpay** account (test keys first, then live) | Take payments, refunds | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET` | Live mode needs your company or LLP and KYC. Add a webhook to `https://<your-domain>/api/payments/razorpay/webhook` for `payment.captured` and `refund.processed`. Turn on **Route** later for automatic partner payouts (Phase 2). |
 | 3 | **WhatsApp Business Cloud API** (Meta) | OTP codes, booking alerts, partner Confirm/Decline buttons | `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_APP_SECRET`, `WHATSAPP_VERIFY_TOKEN`, `ADMIN_ALERT_WHATSAPP` | Needs a verified Meta Business account and a phone number not already on WhatsApp. Set the webhook to `https://<your-domain>/api/whatsapp/webhook` and subscribe to `messages`. Submit the 15 templates in `src/server/whatsapp/templates.ts` for approval (names and text must match exactly). |
 | 4 | **Private file storage** (AWS S3 in Mumbai, or Cloudflare R2), optional | Guest ID photos for permits | `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_ENDPOINT` (R2 only) | Without it, files are stored in MongoDB GridFS, which is fine at launch volumes. Keep the bucket private. The app deletes IDs 7 days after each trip. Add a 30-day lifecycle rule as a backup. |
 | 5 | **Vercel** project | Hosting and cron jobs | all of the above plus `SESSION_SECRET` (random, 32+ chars), `CRON_SECRET`, `NEXT_PUBLIC_SITE_URL` | `vercel.json` runs one daily job, which works on Hobby. On Pro you can add the 1-minute and 10-minute jobs back. |
